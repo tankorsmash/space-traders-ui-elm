@@ -11,7 +11,7 @@ import Http
 import Json.Decode
 import Json.Encode
 import Length exposing (Meters)
-import Point2d exposing (Point2d)
+import Point2d exposing (Point2d, interpolateFrom)
 import Point3d exposing (Point3d)
 import Port
 import Quantity
@@ -803,56 +803,35 @@ normalize min max value =
 zScale : Float -> ( Float, Float )
 zScale t =
     let
-        -- the max distance from the center of the galaxy
-        x_0 : Float
-        x_0 =
-            45000
+        point0 : Point2d Meters Shared.LightYear
+        point0 =
+            Point2d.meters 45000 0
 
-        -- magic number
-        x_1 : Float
-        x_1 =
-            5500
+        point1 : Point2d Meters Shared.LightYear
+        point1 =
+            Point2d.meters 5500 600
 
-        -- magic number
-        x_2 : Float
-        x_2 =
-            21000
+        point2 : Point2d Meters Shared.LightYear
+        point2 =
+            Point2d.meters 21000 4800
 
-        -- magic number
-        x_3 : Float
-        x_3 =
-            0
+        point3 : Point2d Meters Shared.LightYear
+        point3 =
+            Point2d.meters 0 4400
 
-        -- max height, magic
-        y_0 : Float
-        y_0 =
-            0
-
-        -- magic number
-        y_1 : Float
-        y_1 =
-            600
-
-        -- magic number
-        y_2 : Float
-        y_2 =
-            4800
-
-        -- magic number
-        y_3 : Float
-        y_3 =
-            4400
-
-        i_t : Float
-        i_t =
+        invertedT : Float
+        invertedT =
             1 - t
 
+        lerp : Point2d Meters Shared.LightYear -> Point2d Meters Shared.LightYear -> Point2d Meters Shared.LightYear
         lerp a b =
-            i_t * a + t * b
+            interpolateFrom a b invertedT
     in
-    ( lerp (lerp (lerp x_0 x_1) (lerp x_1 x_2)) (lerp (lerp x_1 x_2) (lerp x_2 x_3))
-    , lerp (lerp (lerp y_0 y_1) (lerp y_1 y_2)) (lerp (lerp y_1 y_2) (lerp y_2 y_3))
-    )
+    lerp
+        (lerp (lerp point0 point1) (lerp point1 point2))
+        (lerp (lerp point1 point2) (lerp point2 point3))
+        |> Point2d.unwrap
+        |> (\{ x, y } -> ( x, y ))
 
 
 renderSystem : Point3d Meters Shared.LightYear -> Scene3d.Entity Shared.ScaledViewPoint
