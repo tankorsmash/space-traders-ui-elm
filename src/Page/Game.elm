@@ -798,6 +798,7 @@ normalize min max value =
     (value - min) / (max - min)
 
 
+
 {-| <https://www.desmos.com/calculator/vxq5jjmlyu>
 -}
 zScale : Float -> ( Float, Float )
@@ -834,8 +835,16 @@ zScale t =
         -- magic number
         y_3 =
             4400
+
+        i_t =
+            1 - t
+
+        lerp a b =
+            i_t * a + t * b
     in
-    ( (1 - t) * ((1 - t) * ((1 - t) * x_0 + t * x_1) + t * ((1 - t) * x_1 + t * x_2)) + t * ((1 - t) * ((1 - t) * x_1 + t * x_2) + t * ((1 - t) * x_2 + t * x_3)), (1 - t) * ((1 - t) * ((1 - t) * y_0 + t * y_1) + t * ((1 - t) * y_1 + t * y_2)) + t * ((1 - t) * ((1 - t) * y_1 + t * y_2) + t * ((1 - t) * y_2 + t * y_3)) )
+    ( lerp (lerp (lerp x_0 x_1) (lerp x_1 x_2)) (lerp (lerp x_1 x_2) (lerp x_2 x_3))
+    , lerp (lerp (lerp y_0 y_1) (lerp y_1 y_2)) (lerp (lerp y_1 y_2) (lerp y_2 y_3))
+    )
 
 
 renderSystem : Point3d Meters Shared.LightYear -> Scene3d.Entity Shared.ScaledViewPoint
