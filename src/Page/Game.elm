@@ -798,44 +798,52 @@ normalize min max value =
     (value - min) / (max - min)
 
 
-
 {-| <https://www.desmos.com/calculator/vxq5jjmlyu>
 -}
 zScale : Float -> ( Float, Float )
 zScale t =
     let
         -- the max distance from the center of the galaxy
+        x_0 : Float
         x_0 =
             45000
 
         -- magic number
+        x_1 : Float
         x_1 =
             5500
 
         -- magic number
+        x_2 : Float
         x_2 =
             21000
 
         -- magic number
+        x_3 : Float
         x_3 =
             0
 
         -- max height, magic
+        y_0 : Float
         y_0 =
             0
 
         -- magic number
+        y_1 : Float
         y_1 =
             600
 
         -- magic number
+        y_2 : Float
         y_2 =
             4800
 
         -- magic number
+        y_3 : Float
         y_3 =
             4400
 
+        i_t : Float
         i_t =
             1 - t
 
