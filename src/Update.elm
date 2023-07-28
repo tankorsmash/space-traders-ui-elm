@@ -57,9 +57,10 @@ withCmd cmd (Update update) =
     Update { update | cmd = Cmd.batch [ update.cmd, cmd ] }
 
 
-withMsg : msg -> Update model msg -> Update model msg
-withMsg msg update =
-    update
+withMsg : msg -> (msg -> model -> Update model msg) -> Update model msg -> Update model msg
+withMsg msg updateFn (Update { model, cmd }) =
+    updateFn msg model
+        |> withCmd cmd
 
 
 withEffect : Effect -> Update model msg -> Update model msg
